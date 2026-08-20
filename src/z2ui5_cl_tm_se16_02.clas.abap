@@ -68,26 +68,39 @@ CLASS z2ui5_cl_tm_se16_02 IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
+    DATA(view) = z2ui5_cl_ui5_view_builder=>factory( 
+                     )->ele( n = `View` ns = `mvc` 
+                     )->a( n = `xmlns` v = `sap.m` 
+                     )->a( n = `xmlns:mvc` v = `sap.ui.core.mvc` 
+                     )->a( n = `xmlns:core` v = `sap.ui.core` 
+                     )->a( n = `xmlns:form` v = `sap.ui.layout.form` 
+                     )->a( n = `xmlns:mchart` v = `sap.suite.ui.microchart` 
+                     )->a( n = `xmlns:si` v = `sap.suite.ui.commons.statusindicator` 
+                     )->a( n = `displayBlock` v = `true` 
+                     )->a( n = `height` v = `100%` ).
 
-    DATA(page) = view->shell( )->page(
-                     id             = `page_main`
-                     title          = |abap2UI5 - SE16 CLOUD - { mo_prev->mv_tabname }|
-                     navbuttonpress = client->_event( `BACK` )
-                     floatingfooter = abap_true
-                     shownavbutton  = client->check_app_prev_stack( ) ).
+    DATA(page) = view->ele( `Shell` 
+                     )->ele( `Page` 
+                     )->a( n = `id` v = `page_main` 
+                     )->a( n = `title` v = |abap2UI5 - SE16 CLOUD - { mo_prev->mv_tabname }| 
+                     )->a( n = `navButtonPress` v = client->_event( `BACK` ) 
+                     )->a( n = `floatingFooter` b = abap_true 
+                     )->a( n = `showNavButton` b = client->check_app_prev_stack( ) ).
 
     z2ui5_cl_layo_xml_builder=>xml_build_table( i_data   = mr_table
                                                 i_xml    = page
                                                 i_client = client
                                                 i_layout = mo_layout ).
 
-    page->footer( )->overflow_toolbar(
-        )->button( text  = `Back`
-                   press = client->_event( `BACK` )
-        )->toolbar_spacer(
-        )->button( text  = `Refresh`
-                   press = client->_event( `REFRESH` ) ).
+    page->ele( `footer` 
+        )->ele( `OverflowToolbar` 
+        )->tag( `Button` 
+        )->a( n = `text` v = `Back` 
+        )->a( n = `press` v = client->_event( `BACK` ) 
+        )->tag( `ToolbarSpacer` 
+        )->tag( `Button` 
+        )->a( n = `text` v = `Refresh` 
+        )->a( n = `press` v = client->_event( `REFRESH` ) ).
 
     client->view_display( view->stringify( ) ).
 

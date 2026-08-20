@@ -47,33 +47,47 @@ CLASS z2ui5_cl_tm_se16_01 IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = view->shell( )->page( title          = `abap2UI5 - SE16 CLOUD - Start`
-                                       navbuttonpress = client->_event( `BACK` )
-                                       shownavbutton  = client->check_app_prev_stack( )
-                                       floatingfooter = abap_true ).
-    DATA(vbox) = page->vbox( ).
+    DATA(view) = z2ui5_cl_ui5_view_builder=>factory( 
+                     )->ele( n = `View` ns = `mvc` 
+                     )->a( n = `xmlns` v = `sap.m` 
+                     )->a( n = `xmlns:mvc` v = `sap.ui.core.mvc` 
+                     )->a( n = `xmlns:core` v = `sap.ui.core` 
+                     )->a( n = `displayBlock` v = `true` 
+                     )->a( n = `height` v = `100%` ).
+    DATA(page) = view->ele( `Shell` 
+                     )->ele( `Page` 
+                     )->a( n = `title` v = `abap2UI5 - SE16 CLOUD - Start` 
+                     )->a( n = `navButtonPress` v = client->_event( `BACK` ) 
+                     )->a( n = `showNavButton` b = client->check_app_prev_stack( ) 
+                     )->a( n = `floatingFooter` b = abap_true ).
+    DATA(vbox) = page->ele( `VBox` ).
 
-    vbox->hbox(
-        )->input(  value       = client->_bind_edit( mv_tabname )
-                   description = `Table`
-                   submit      = client->_event( `UPDATE_TABLE` )
-        )->button( press = client->_event( `UPDATE_TABLE` )
-                   text  = `Load` ).
-    vbox->hbox(
-        )->input(  value       = client->_bind_edit( ms_layout-layout )
-                   description = `Layout`
-                   enabled     = abap_false
-        )->button( press = client->_event( `POPUP_LAYOUT` )
-                   text  = `Choose Layout` ).
+    vbox->ele( `HBox` 
+        )->tag( `Input` 
+        )->a( n = `value` v = client->_bind_edit( mv_tabname ) 
+        )->a( n = `description` v = `Table` 
+        )->a( n = `submit` v = client->_event( `UPDATE_TABLE` ) 
+        )->tag( `Button` 
+        )->a( n = `press` v = client->_event( `UPDATE_TABLE` ) 
+        )->a( n = `text` v = `Load` ).
+    vbox->ele( `HBox` 
+        )->tag( `Input` 
+        )->a( n = `value` v = client->_bind_edit( ms_layout-layout ) 
+        )->a( n = `description` v = `Layout` 
+        )->a( n = `enabled` b = abap_false 
+        )->tag( `Button` 
+        )->a( n = `press` v = client->_event( `POPUP_LAYOUT` ) 
+        )->a( n = `text` v = `Choose Layout` ).
     IF mv_tabname IS NOT INITIAL.
       mo_multiselect->set_output( client = client view = vbox ).
     ENDIF.
-    page->footer( )->overflow_toolbar(
-        )->toolbar_spacer(
-        )->button( text  = `GO`
-                   type  = `Emphasized`
-                   press = client->_event( `GO` ) ).
+    page->ele( `footer` 
+        )->ele( `OverflowToolbar` 
+        )->tag( `ToolbarSpacer` 
+        )->tag( `Button` 
+        )->a( n = `text` v = `GO` 
+        )->a( n = `type` v = `Emphasized` 
+        )->a( n = `press` v = client->_event( `GO` ) ).
 
     client->view_display( view->stringify( ) ).
 
